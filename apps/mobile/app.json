@@ -12,13 +12,18 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.patmakesapps.thinkmate",
       "infoPlist": {
-        "NSMicrophoneUsageDescription": "ThinkMate uses the microphone to record meetings so it can transcribe and summarize them."
+        "NSMicrophoneUsageDescription": "ThinkMate uses the microphone to record meetings so it can transcribe and summarize them.",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
       "package": "com.patmakesapps.thinkmate",
       "permissions": [
-        "RECORD_AUDIO"
+        "RECORD_AUDIO",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"
       ],
       "adaptiveIcon": {
         "backgroundColor": "#08090C",
