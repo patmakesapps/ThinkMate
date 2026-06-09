@@ -2,6 +2,7 @@
   "expo": {
     "name": "ThinkMate",
     "slug": "thinkmate",
+    "owner": "companionai",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -39,6 +40,11 @@
       ],
       "expo-sqlite",
       "expo-asset"
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "6e7670e5-73ee-4129-adee-1c46548eff74"
+      }
+    }
   }
 }
