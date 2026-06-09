@@ -1,0 +1,8 @@
+node_modules/
+.claude/
+dist/
+*.tsbuildinfo
+.env
+.env.local
+*.log
+.DS_Store

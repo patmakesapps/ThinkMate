@@ -1,0 +1,15 @@
+{
+  "name": "thinkmate",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Turn confusing meetings into clear understanding. Raw transcript + polished view.",
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "demo": "node --env-file=.env --import tsx packages/engine/src/cli.ts",
+    "build": "npm run build -w @thinkmate/engine",
+    "typecheck": "tsc -b"
+  }
+}
