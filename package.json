@@ -11,7 +11,8 @@
   "scripts": {
     "demo": "node --env-file=.env --import tsx packages/engine/src/cli.ts",
     "server": "node --env-file=.env --import tsx apps/server/src/index.ts",
-    "build": "npm run build -w @thinkmate/engine",
+    "build": "npm run build -w @thinkmate/engine && npm run build -w @thinkmate/server",
+    "start": "node apps/server/dist/index.js",
     "typecheck": "tsc -b"
   }
 }

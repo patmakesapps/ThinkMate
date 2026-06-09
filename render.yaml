@@ -1,0 +1,16 @@
+# Render blueprint for the ThinkMate backend.
+# Deploy: render.com -> New -> Blueprint -> pick this repo.
+# Set the two secret keys in the Render dashboard (they are NOT in the repo).
+services:
+  - type: web
+    name: thinkmate-api
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: DEEPGRAM_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false

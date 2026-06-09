@@ -12,6 +12,7 @@
  * Run: npm run server   (from repo root; loads ../../.env)
  */
 import { writeFile, unlink, mkdtemp } from "node:fs/promises";
+import { File } from "node:buffer";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { serve } from "@hono/node-server";
