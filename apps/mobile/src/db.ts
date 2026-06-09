@@ -22,6 +22,7 @@ export interface MeetingRow {
 interface Store {
   save(result: MeetingResult): Promise<void>;
   list(): Promise<MeetingRow[]>;
+  has(id: string): Promise<boolean>;
   remove(id: string): Promise<void>;
   clear(): Promise<void>;
 }
@@ -42,6 +43,9 @@ function memoryStore(): Store {
     },
     async list() {
       return [...rows].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+    },
+    async has(id) {
+      return rows.some((r) => r.id === id);
     },
     async remove(id) {
       rows = rows.filter((r) => r.id !== id);
@@ -78,6 +82,13 @@ function sqliteStore(db: SQLite.SQLiteDatabase): Store {
         createdAt: r.createdAt,
         result: JSON.parse(r.result) as MeetingResult,
       }));
+    },
+    async has(id) {
+      const row = await db.getFirstAsync<{ id: string }>(
+        "SELECT id FROM meetings WHERE id = ? LIMIT 1",
+        id,
+      );
+      return row != null;
     },
     async remove(id) {
       await db.runAsync("DELETE FROM meetings WHERE id = ?", id);
@@ -116,18 +127,52 @@ function store(): Promise<Store> {
   return storePromise;
 }
 
+// --- Change notifications ----------------------------------------------------
+//
+// Several screens read the same history (the result view holds an open meeting,
+// the history list shows all of them). When anything mutates the store we notify
+// every listener so a delete is reflected everywhere immediately — no stale copy
+// of a meeting can linger on another screen.
+
+type Listener = () => void;
+const listeners = new Set<Listener>();
+
+/** Subscribe to history changes. Returns an unsubscribe function. */
+export function subscribeMeetings(listener: Listener): () => void {
+  listeners.add(listener);
+  return () => listeners.delete(listener);
+}
+
+function emitChange(): void {
+  for (const listener of listeners) {
+    try {
+      listener();
+    } catch (err) {
+      console.warn("meeting listener threw:", err);
+    }
+  }
+}
+
 export async function saveMeeting(result: MeetingResult): Promise<void> {
-  return (await store()).save(result);
+  await (await store()).save(result);
+  emitChange();
 }
 
 export async function listMeetings(): Promise<MeetingRow[]> {
   return (await store()).list();
 }
 
+/** Whether a meeting still exists — used to drop deleted meetings from open views. */
+export async function meetingExists(id: string): Promise<boolean> {
+  return (await store()).has(id);
+}
+
 export async function deleteMeeting(id: string): Promise<void> {
-  return (await store()).remove(id);
+  await (await store()).remove(id);
+  emitChange();
 }
 
 export async function clearAllMeetings(): Promise<void> {
-  return (await store()).clear();
+  await (await store()).clear();
+  emitChange();
 }

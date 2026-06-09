@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { Animated, Easing, Pressable, StyleSheet, Text, View } from "react-native";
+import { Animated, Easing, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { colors, radius, space } from "./theme";
 
 /** Three-bar ThinkMate mark used in the disc center and header. */
@@ -204,4 +204,89 @@ const btn = StyleSheet.create({
   ghost: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border },
   danger: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.danger },
   label: { color: "#06121F", fontSize: 16, fontWeight: "700" },
+});
+
+/**
+ * Small themed confirmation dialog. Used for every destructive action so a
+ * delete always asks first, with an on-brand look instead of the OS alert.
+ * Render it once and toggle `visible`; `onCancel`/`onConfirm` close it.
+ */
+export function ConfirmDialog({
+  visible,
+  title,
+  message,
+  confirmLabel = "Delete",
+  cancelLabel = "Cancel",
+  destructive = true,
+  onConfirm,
+  onCancel,
+}: {
+  visible: boolean;
+  title: string;
+  message?: string;
+  confirmLabel?: string;
+  cancelLabel?: string;
+  destructive?: boolean;
+  onConfirm: () => void;
+  onCancel: () => void;
+}) {
+  return (
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onCancel}>
+      <Pressable style={confirm.backdrop} onPress={onCancel}>
+        {/* Stop taps inside the card from dismissing. */}
+        <Pressable style={confirm.card} onPress={() => {}}>
+          <Text style={confirm.title}>{title}</Text>
+          {message ? <Text style={confirm.message}>{message}</Text> : null}
+          <View style={confirm.row}>
+            <Pressable
+              onPress={onCancel}
+              style={({ pressed }) => [confirm.action, confirm.cancel, pressed && { opacity: 0.8 }]}
+            >
+              <Text style={confirm.cancelText}>{cancelLabel}</Text>
+            </Pressable>
+            <Pressable
+              onPress={onConfirm}
+              style={({ pressed }) => [
+                confirm.action,
+                destructive ? confirm.confirmDanger : confirm.confirmPrimary,
+                pressed && { opacity: 0.8 },
+              ]}
+            >
+              <Text style={[confirm.confirmText, destructive && { color: "#FFFFFF" }]}>
+                {confirmLabel}
+              </Text>
+            </Pressable>
+          </View>
+        </Pressable>
+      </Pressable>
+    </Modal>
+  );
+}
+
+const confirm = StyleSheet.create({
+  backdrop: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.6)",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: space.lg,
+  },
+  card: {
+    width: "100%",
+    maxWidth: 340,
+    backgroundColor: colors.surfaceRaised,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    padding: space.lg,
+  },
+  title: { color: colors.text, fontSize: 17, fontWeight: "700", marginBottom: space.xs },
+  message: { color: colors.textMuted, fontSize: 14, lineHeight: 20, marginBottom: space.lg },
+  row: { flexDirection: "row", gap: space.sm, marginTop: space.sm },
+  action: { flex: 1, paddingVertical: 12, borderRadius: radius.pill, alignItems: "center" },
+  cancel: { backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border },
+  cancelText: { color: colors.text, fontSize: 15, fontWeight: "600" },
+  confirmPrimary: { backgroundColor: colors.accent },
+  confirmDanger: { backgroundColor: colors.danger },
+  confirmText: { color: "#06121F", fontSize: 15, fontWeight: "700" },
 });

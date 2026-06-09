@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ThinkMate — Privacy Policy</title>
+  <style>
+    :root { color-scheme: dark; }
+    body {
+      margin: 0;
+      background: #08090C;
+      color: #F2F4F8;
+      font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 48px 24px 80px; }
+    h1 { font-size: 28px; margin: 0 0 4px; }
+    h2 { font-size: 18px; margin: 36px 0 8px; color: #5B9DF9; }
+    .meta { color: #8A92A6; font-size: 14px; margin-bottom: 8px; }
+    a { color: #5B9DF9; }
+    ul { padding-left: 20px; }
+    li { margin: 6px 0; }
+    .muted { color: #8A92A6; }
+    hr { border: none; border-top: 1px solid #222632; margin: 40px 0; }
+    code { background: #101218; padding: 1px 6px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>ThinkMate Privacy Policy</h1>
+    <p class="meta">Developer: Lumalien (<a href="https://lumalien.com">lumalien.com</a>) · Effective June 9, 2026</p>
+
+    <p>
+      ThinkMate records meetings, transcribes them, and produces a short summary.
+      This policy explains what data the app handles and where it goes. In short:
+      <strong>your meetings live on your device</strong>, and the only time audio
+      leaves your device is to be transcribed and summarized — it is never stored
+      on our servers.
+    </p>
+
+    <h2>What we handle</h2>
+    <ul>
+      <li><strong>Audio recordings.</strong> When you tap record, ThinkMate captures audio using your device's microphone.</li>
+      <li><strong>Meeting metadata.</strong> A title containing the date and time the recording was made.</li>
+      <li><strong>Generated results.</strong> The transcript and summary produced from your recording.</li>
+    </ul>
+    <p class="muted">
+      We do not require an account. We do not collect your name, email, contacts,
+      location, advertising identifiers, or usage analytics.
+    </p>
+
+    <h2>How your recording is processed</h2>
+    <p>
+      To turn audio into a transcript and summary, the app sends your recording
+      over an encrypted (HTTPS) connection to the ThinkMate processing service.
+      That service is <strong>stateless</strong>: it processes your audio in
+      memory, returns the result, and deletes the temporary file immediately. It
+      does not keep your audio, transcript, or summary.
+    </p>
+    <p>To perform the processing, the service uses two third-party providers:</p>
+    <ul>
+      <li><strong>Deepgram</strong> — converts speech to text. See the <a href="https://deepgram.com/privacy">Deepgram Privacy Policy</a>.</li>
+      <li><strong>Anthropic (Claude)</strong> — generates the summary. See the <a href="https://www.anthropic.com/legal/privacy">Anthropic Privacy Policy</a>.</li>
+    </ul>
+    <p class="muted">
+      Your audio and transcript are shared with these providers solely to perform
+      transcription and summarization for you, and only for as long as needed to
+      return the result.
+    </p>
+
+    <h2>Where your data is stored</h2>
+    <p>
+      Your transcripts and summaries are saved <strong>only on your device</strong>,
+      in the app's local storage. We have no server-side copy and no ability to
+      access your saved meetings. If you use the app on the web, history is held
+      only in your browser session.
+    </p>
+
+    <h2>Your control and deletion</h2>
+    <ul>
+      <li>Delete any single meeting from the History screen.</li>
+      <li>Use “Clear” in History to permanently delete all saved meetings on the device.</li>
+      <li>Uninstalling the app removes all locally stored data.</li>
+    </ul>
+
+    <h2>Children</h2>
+    <p>ThinkMate is not directed to children under 13, and we do not knowingly collect data from them.</p>
+
+    <h2>Security</h2>
+    <p>Audio is transmitted over encrypted HTTPS connections. Saved results remain on your device under the operating system's app sandbox.</p>
+
+    <h2>Changes to this policy</h2>
+    <p>If this policy changes, we will update this page and revise the effective date above.</p>
+
+    <h2>Contact</h2>
+    <p>Questions? Email <a href="mailto:patmakesapps@gmail.com">patmakesapps@gmail.com</a>.</p>
+
+    <hr />
+    <p class="muted">ThinkMate is a product of Lumalien. © 2026 Lumalien. All rights reserved.</p>
+  </div>
+</body>
+</html>
