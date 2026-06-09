@@ -5,10 +5,12 @@
   "description": "Turn confusing meetings into clear understanding. Raw transcript + polished view.",
   "type": "module",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "apps/*"
   ],
   "scripts": {
     "demo": "node --env-file=.env --import tsx packages/engine/src/cli.ts",
+    "server": "node --env-file=.env --import tsx apps/server/src/index.ts",
     "build": "npm run build -w @thinkmate/engine",
     "typecheck": "tsc -b"
   }

@@ -1,0 +1,19 @@
+{
+  "name": "@thinkmate/server",
+  "version": "0.0.1",
+  "description": "Stateless API that runs the ThinkMate engine. Holds the vendor keys; stores nothing.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "node --env-file=../../.env --import tsx src/index.ts"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.13.0",
+    "@thinkmate/engine": "*",
+    "hono": "^4.6.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}
