@@ -9,6 +9,12 @@ import type { MeetingResult, MeetingMeta } from "./types";
  *   - native: append a { uri, name, type } object (React Native special case).
  *   - web: the recording uri is a blob: URL, so fetch it into a real Blob.
  *
+ * The upload goes through XMLHttpRequest rather than fetch: as of Expo SDK 54+
+ * the global `fetch` is Expo's WinterCG implementation, whose multipart encoder
+ * rejects RN's { uri, name, type } file shape with "Unsupported FormDataPart
+ * implementation". RN's XHR still encodes that shape natively, so it works on
+ * both native and web with no extra native modules.
+ *
  * Note: the free Render instance sleeps when idle, so the first call after a
  * while can take ~50s to wake — callers should show a patient loading state.
  */
@@ -32,22 +38,36 @@ export async function processAudio(
 
   if (meta) form.append("meta", JSON.stringify(meta));
 
-  const res = await fetch(`${BACKEND_URL}/process`, {
-    method: "POST",
-    body: form,
-  });
+  const { status, statusText, body } = await xhrPost(`${BACKEND_URL}/process`, form);
 
-  if (!res.ok) {
+  if (status < 200 || status >= 300) {
     let detail = "";
     try {
-      detail = (await res.json())?.error ?? "";
+      detail = JSON.parse(body)?.error ?? "";
     } catch {
       // non-JSON error body
     }
-    throw new Error(`Backend ${res.status}: ${detail || res.statusText}`);
+    throw new Error(`Backend ${status}: ${detail || statusText}`);
   }
 
-  return (await res.json()) as MeetingResult;
+  return JSON.parse(body) as MeetingResult;
+}
+
+/** POST a FormData body via XMLHttpRequest, resolving with the raw response. */
+function xhrPost(
+  url: string,
+  form: FormData,
+): Promise<{ status: number; statusText: string; body: string }> {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", url);
+    // Let the platform set multipart/form-data + boundary from the FormData body.
+    xhr.onload = () =>
+      resolve({ status: xhr.status, statusText: xhr.statusText, body: xhr.responseText });
+    xhr.onerror = () => reject(new Error("Network request failed"));
+    xhr.ontimeout = () => reject(new Error("Network request timed out"));
+    xhr.send(form);
+  });
 }
 
 export async function checkHealth(): Promise<boolean> {
