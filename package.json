@@ -6,7 +6,7 @@
   "type": "module",
   "workspaces": [
     "packages/*",
-    "apps/*"
+    "apps/server"
   ],
   "scripts": {
     "demo": "node --env-file=.env --import tsx packages/engine/src/cli.ts",
