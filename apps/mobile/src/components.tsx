@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Animated, Easing, Modal, Pressable, StyleSheet, Text, View } from "react-native";
 import { colors, radius, space } from "./theme";
 
@@ -119,6 +119,77 @@ const discStyles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+});
+
+/**
+ * Processing feedback for the "Thinking…" step. The backend doesn't report real
+ * progress, so this shows an indeterminate moving bar plus messages that walk
+ * through the stages, so the user always sees that something is happening (and
+ * that a cold start can take a moment).
+ */
+const PROCESSING_STAGES = [
+  "Uploading your recording…",
+  "Transcribing the conversation…",
+  "Finding decisions and action items…",
+  "Polishing the summary…",
+  "Almost there…",
+];
+
+export function ProcessingIndicator() {
+  const slide = useRef(new Animated.Value(0)).current;
+  const [stage, setStage] = useState(0);
+
+  useEffect(() => {
+    const anim = Animated.loop(
+      Animated.timing(slide, {
+        toValue: 1,
+        duration: 1200,
+        easing: Easing.inOut(Easing.quad),
+        useNativeDriver: true,
+      }),
+    );
+    anim.start();
+
+    // Advance through the stage messages, then hold on the last one.
+    const id = setInterval(() => {
+      setStage((s) => Math.min(s + 1, PROCESSING_STAGES.length - 1));
+    }, 4000);
+
+    return () => {
+      anim.stop();
+      clearInterval(id);
+    };
+  }, []);
+
+  const TRACK = 240;
+  const CHUNK = 88;
+  const translateX = slide.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-CHUNK, TRACK],
+  });
+
+  return (
+    <View style={progress.wrap}>
+      <View style={[progress.track, { width: TRACK }]}>
+        <Animated.View style={[progress.chunk, { width: CHUNK, transform: [{ translateX }] }]} />
+      </View>
+      <Text style={progress.stage}>{PROCESSING_STAGES[stage]}</Text>
+      <Text style={progress.hint}>This can take up to a minute — please keep the app open.</Text>
+    </View>
+  );
+}
+
+const progress = StyleSheet.create({
+  wrap: { alignItems: "center", gap: space.md, paddingHorizontal: space.lg },
+  track: {
+    height: 6,
+    borderRadius: 999,
+    backgroundColor: colors.surfaceRaised,
+    overflow: "hidden",
+  },
+  chunk: { height: 6, borderRadius: 999, backgroundColor: colors.accent },
+  stage: { color: colors.text, fontSize: 15, fontWeight: "600", textAlign: "center" },
+  hint: { color: colors.textFaint, fontSize: 12, textAlign: "center", lineHeight: 17 },
 });
 
 /** Raw | Polished pill toggle. */

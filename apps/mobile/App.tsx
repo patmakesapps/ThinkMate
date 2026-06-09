@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import {
-  ActivityIndicator,
   Alert,
   Linking,
   Pressable,
@@ -19,7 +18,7 @@ import {
   setAudioModeAsync,
 } from "expo-audio";
 import { colors, space } from "./src/theme";
-import { Button, ListeningDisc, Mark, Tabs } from "./src/components";
+import { Button, ListeningDisc, Mark, ProcessingIndicator, Tabs } from "./src/components";
 import { RawView, PolishedView } from "./src/ResultViews";
 import { processAudio } from "./src/api";
 import { meetingExists, saveMeeting, subscribeMeetings } from "./src/db";
@@ -245,12 +244,12 @@ function CaptureScreen({
     <View style={styles.captureBody}>
       <View style={styles.statusBlock}>
         <Text style={[styles.status, active && { color: colors.accent }]}>{statusText}</Text>
-        <Text style={styles.statusSub}>{subText}</Text>
+        {phase !== "processing" && <Text style={styles.statusSub}>{subText}</Text>}
       </View>
 
       <View style={styles.discArea}>
         {phase === "processing" ? (
-          <ActivityIndicator size="large" color={colors.accent} />
+          <ProcessingIndicator />
         ) : (
           <ListeningDisc active={active} />
         )}
